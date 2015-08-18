@@ -16,7 +16,7 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV LANG C
 
 
-
+RUN echo 'Acquire::http { Proxy "http://172.17.42.1:3142"; };' >> /etc/apt/apt.conf.d/01-apt-cache-server
 RUN apt-get update 
 RUN apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
