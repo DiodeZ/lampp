@@ -26,7 +26,6 @@ RUN a2enmod rewrite
 RUN apt-get install -y phpmyadmin
 RUN ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
 RUN a2enconf phpmyadmin
-RUN /etc/init.d/apache2 reload
 
 # Configure /app folder with sample app
 # RUN git clone https://github.com/fermayo/hello-world-lamp.git /app
