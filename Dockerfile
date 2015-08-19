@@ -47,10 +47,10 @@ RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
 
 # make CustomLog (access log) go to stdout instead of files
 #  and ErrorLog to stderr
-RUN find "$APACHE_CONFDIR" -type f -exec sed -ri ' \
-	s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
-	s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
-' '{}' ';'
+#RUN find "$APACHE_CONFDIR" -type f -exec sed -ri ' \
+#	s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
+#	s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
+#' '{}' ';'
 # Add volumes for MySQL 
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
