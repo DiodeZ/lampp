@@ -1,4 +1,4 @@
-FROM ubuntu:trusty
+FROM debian:jessie-slim
 MAINTAINER DIREKTSPEED LTD
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -16,20 +16,14 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV LANG C
 
 
-RUN echo 'Acquire::http { Proxy "http://172.17.42.1:3142"; };' >> /etc/apt/apt.conf.d/01-apt-cache-server
-RUN apt-get update 
-RUN apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-RUN rm -rf /var/lib/mysql/*
-RUN a2enmod rewrite
-RUN apt-get install -y phpmyadmin
-RUN ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf
-RUN a2enconf phpmyadmin
-
-# Configure /app folder with sample app
-# RUN git clone https://github.com/fermayo/hello-world-lamp.git /app
-# RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
+RUN apt-get update && apt-get -y install supervisor git apache2 libapache2-mod-php5 mysql-server php5-mysql pwgen php-apc php5-mcrypt && \
+    echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+    rm -rf /var/lib/mysql/* && \
+    a2enmod rewrite && \
+    apt-get install -y phpmyadmin && \
+    ln -s /etc/phpmyadmin/apache.conf /etc/apache2/conf-available/phpmyadmin.conf && \
+    a2enconf phpmyadmin && \
+    mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
 
 ADD start-apache2.sh /start-apache2.sh
 ADD start-mysqld.sh /start-mysqld.sh
@@ -42,15 +36,6 @@ ADD create_mysql_admin_user.sh /create_mysql_admin_user.sh
 
 RUN chmod 755 /*.sh
 
-# ...
-RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
-
-# make CustomLog (access log) go to stdout instead of files
-#  and ErrorLog to stderr
-#RUN find "$APACHE_CONFDIR" -type f -exec sed -ri ' \
-#	s!^(\s*CustomLog)\s+\S+!\1 /proc/self/fd/1!g; \
-#	s!^(\s*ErrorLog)\s+\S+!\1 /proc/self/fd/2!g; \
-#' '{}' ';'
 # Add volumes for MySQL 
 VOLUME  ["/etc/mysql", "/var/lib/mysql" ]
 
